@@ -1,10 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import LoginScreen from './scr/LoginScreen';
+import RegisterScreen from './scr/RegisterScreen';
 
 export default function App() {
+  const [tela, setTela] = useState('login'); // 'login' ou 'registro'
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      {tela === 'login' ? (
+        <LoginScreen onGoToRegister={() => setTela('registro')} />
+      ) : (
+        <RegisterScreen onGoToLogin={() => setTela('login')} />
+      )}
       <StatusBar style="auto" />
     </View>
   );
