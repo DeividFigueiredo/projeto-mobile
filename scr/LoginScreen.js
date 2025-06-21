@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { buscarUsuarios } from '../database/databaseMantis';
 
-export default function LoginScreen({ onGoToRegister }) {
+export default function LoginScreen({ onGoToRegister, onGoToDebug}) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
@@ -25,6 +25,7 @@ export default function LoginScreen({ onGoToRegister }) {
       <TextInput placeholder="Senha" value={senha} onChangeText={setSenha} style={styles.input} secureTextEntry />
       <Button title="Entrar" onPress={handleLogin} />
       <Button title="Registrar-se" onPress={onGoToRegister} />
+      <Button title ="Debug" onPress={onGoToDebug} />
       <Text style={styles.msg}>{mensagem}</Text>
     </View>
   );
