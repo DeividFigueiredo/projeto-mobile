@@ -62,3 +62,31 @@ export async function listarProd(callback) {
   const produtos = await db.getAllAsync('SELECT * FROM produtos;');
   if (callback) callback(produtos);
 }
+
+export async function adicionarProduto(produto, callback) {
+  const db = await getDb();
+  await db.runAsync(
+    'INSERT INTO produtos (nome, descricao, preco, categoria) VALUES (?, ?, ?, ?);',
+    [produto.nome, produto.descricao, produto.preco, produto.categoria]
+  );
+  if (callback) callback();
+}
+
+export async function atualizarProduto(id, produto, callback) {
+  const db = await getDb();
+  await db.runAsync(
+    'UPDATE produtos SET nome = ?, descricao = ?, preco = ?, categoria = ? WHERE id = ?;',
+    [produto.nome, produto.descricao, produto.preco, produto.categoria, id]
+  );
+  if (callback) callback();
+}
+export async function removerProduto(id, callback) {
+  const db = await getDb();
+  await db.runAsync('DELETE FROM produtos WHERE id = ?;', [id]);
+  if (callback) callback();
+}
+export async function buscarProdutoPorId(id, callback) {
+  const db = await getDb();
+  const produto = await db.getAsync('SELECT * FROM produtos WHERE id = ?;', [id]);
+  if (callback) callback(produto);
+}
