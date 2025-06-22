@@ -12,6 +12,26 @@ export async function criarTabelaUsuarios() {
     );
   `);
 }
+
+export async function CriarTabelaProdutos() {
+  try {
+    console.log('Tentando criar tabela produtos...');
+    const db = await getDb();
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS produtos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome varchar(50),
+        descricao varchar(255),
+        preco REAL,
+        categoria varchar(50)
+      );
+    `);
+    console.log('Tabela produtos criada ou já existe.');
+  } catch (e) {
+    console.log('Erro ao criar tabela produtos:', e);
+    throw e;
+  }
+}
 // Adicionar usuário (ordem correta dos parâmetros)
 export async function adicionarUsuario(nome, email, senha, callback) {
   try {
@@ -35,4 +55,10 @@ export async function buscarUsuarios(callback) {
   const db = await getDb();
   const usuarios = await db.getAllAsync('SELECT * FROM usuarios;');
   if (callback) callback(usuarios);
+}
+
+export async function listarProd(callback) {
+  const db = await getDb();
+  const produtos = await db.getAllAsync('SELECT * FROM produtos;');
+  if (callback) callback(produtos);
 }

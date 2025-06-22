@@ -1,21 +1,31 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { adicionarUsuario } from '../database/databaseMantis';
+import { criptografarSenha } from '../utils/crypto';
 
 export default function RegisterScreen({ onGoToLogin }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [erro, setErro] = useState(null);
 
   const handleRegistrar = async () => {
-    if (!nome || !email || !senha) {
-      setMensagem('Preencha todos os campos!');
-      return;
+    try {
+      setErro(null);
+      if (!nome || !email || !senha) {
+        setMensagem('Preencha todos os campos!');
+        return;
+      }
+      const senhaCriptografada = criptografarSenha(senha);
+      await adicionarUsuario(nome, email, senhaCriptografada);
+      setMensagem('Usuário registrado com sucesso!');
+      setTimeout(onGoToLogin, 1000);
+    } catch (e) {
+      setErro(e.message || String(e));
+      setMensagem('Erro ao registrar usuário!');
+      console.log('Erro ao registrar usuário:', e);
     }
-    await adicionarUsuario(nome, email, senha);
-    setMensagem('Usuário registrado com sucesso!');
-    setTimeout(onGoToLogin, 1000);
   };
 
   return (
@@ -26,6 +36,7 @@ export default function RegisterScreen({ onGoToLogin }) {
       <TextInput placeholder="Senha" value={senha} onChangeText={setSenha} style={styles.input} secureTextEntry />
       <Button title="Registrar" onPress={handleRegistrar} />
       <Button title="Já tem conta? Login" onPress={onGoToLogin} />
+      {erro && <Text style={{ color: 'red' }}>Erro: {erro}</Text>}
       <Text style={styles.msg}>{mensagem}</Text>
     </View>
   );
